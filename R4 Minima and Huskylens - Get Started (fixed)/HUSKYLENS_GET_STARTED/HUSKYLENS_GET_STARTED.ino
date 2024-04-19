@@ -3,10 +3,14 @@
  <https://www.dfrobot.com/product-1922.html>
  
  ***************************************************
- This example shows the basic function of library for HUSKYLENS via Serial.
+ This example shows the basic function of library for HUSKYLENS
+ via Serial.
  
  Created 2020-03-13
  By [Angelo qiao](Angelo.qiao@dfrobot.com)
+
+ Edited 2024-04-19
+ By [Tess](studio@tesalonika.com)
  
  GNU Lesser General Public License.
  See <http://www.gnu.org/licenses/> for details.
@@ -18,6 +22,16 @@
  <https://wiki.dfrobot.com/HUSKYLENS_V1.0_SKU_SEN0305_SEN0336#target_23>
  2.This code is tested on Arduino Uno, Leonardo, Mega boards.
  ****************************************************/
+
+ /**********************Edited*************************
+  * The RX (Receive) and TX (Transmit) pins on an Arduino board are
+  * essential for serial communication. They are primarily used for
+  * communication between the Arduino and external devices, such as
+  * sensors, displays, or other microcontrollers.
+  * 
+  * In R4, SoftwareSerial, only D0, D1, D2, D3, D8, D14, D15, A1, A2,
+  * A3, A4, & A5 can be used for RX. TX can be on any pin.
+  ****************************************************/
 
 #include "HUSKYLENS.h"
 #include "SoftwareSerial.h"
