@@ -3,6 +3,14 @@
  * 
  * VIDEO TUTORIAL: https://www.youtube.com/watch?v=k-LXs94nRaU
  * by Maker Tutor
+ * 
+ * The HuskyLens module communicates using the I2C protocol,
+ * so you should connect it to the Arduino's dedicated I2C pins.
+ * On most Arduino boards, these pins are labeled as SDA (data line)
+ * and SCL (clock line). 
+ * 
+ * The pins used for I2C on the UNO R4 Minima are the following:
+ * SDA - D18 or A4. SCL - D19 or A5.
  */
 #include <DFRobot_Servo.h>
 #include <DFRobot_HuskyLens.h>
