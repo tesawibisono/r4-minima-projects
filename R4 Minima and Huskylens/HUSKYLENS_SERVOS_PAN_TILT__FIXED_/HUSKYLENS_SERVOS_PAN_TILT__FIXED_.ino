@@ -56,6 +56,7 @@ void loop() {
   if (xCenter > 190) {
     mind_n_currentx -= 1.5;
     servo_9.write(constrain(mind_n_currentx, 0, 120));
+    
   } else if (xCenter > 10 && xCenter < 130) {
     mind_n_currentx += 1.5;
     servo_9.write(constrain(mind_n_currentx, 0, 120));
