@@ -1,75 +1,59 @@
-/*****************************************
-The HuskyLens module communicates using the I2C protocol,
-so you should connect it to the Arduino's dedicated I2C pins.
-On most Arduino boards, these pins are labeled as SDA (data line)
-and SCL (clock line). 
- 
-The pins used for I2C on the UNO R4 Minima are the following:
-SDA - D18 or A4. SCL - D19 or A5.
-
-Huskylens Connection
-Blue - SCL
-Green - SDA
-*****************************************/
-
 #include <SoftwareSerial.h>
 #include <DFRobot_HuskyLens.h>
 #include <Servo.h>
 
-// Global variables
-volatile float mind_n_currentx = 0;
-volatile float mind_n_currenty = 0;
+// Pin Definitions
+#define PAN_SERVO_PIN 9
+#define TILT_SERVO_PIN 10
 
-// Create an object
-DFRobot_HuskyLens huskylens;
-Servo servo_9;
-Servo servo_10;
+// Global Variables
+Servo panServo;
+Servo tiltServo;
+DFRobot_HuskyLens huskyLens;
 
-// Main program start
 void setup() {
+  // Initialize serial communication for debugging
+  Serial.begin(115200);
+
   // Attach servos to pins
-  servo_9.attach(9); // Pan servo connected to pin 9
-  servo_10.attach(10); // Tilt servo connected to pin 10
-  
+  panServo.attach(PAN_SERVO_PIN);
+  tiltServo.attach(TILT_SERVO_PIN);
+
   // Initialize HuskyLens
-  Serial.begin(9600); // Initialize serial communication for debugging
-  huskylens.beginI2CUntilSuccess(); // Initialize I2C communication with HuskyLens
-  huskylens.writeAlgorithm(ALGORITHM_OBJECT_TRACKING); // Set algorithm to object tracking mode
-  delay(1000); // Wait for 1 second
+  huskyLens.beginI2CUntilSuccess();
+  huskyLens.writeAlgorithm(ALGORITHM_OBJECT_TRACKING); // Set algorithm to object tracking mode
   
-  // Initialize initial servo positions
-  mind_n_currentx = 40;
-  mind_n_currenty = 150;
-  servo_9.write(mind_n_currentx); // Set initial position for servo_9
-  servo_10.write(mind_n_currenty); // Set initial position for servo_10
+  // Set initial position of servos
+  panServo.write(90); // Center position
+  tiltServo.write(90); // Center position
+
+  delay(2000);
 }
 
 void loop() {
   // Request data from HuskyLens
-  huskylens.request();
+  huskyLens.request();
   
-  // Adjust servo positions based on object position
-  int xCenter = huskylens.readBlockParameter(1).xCenter;
-  int yCenter = huskylens.readBlockParameter(1).yCenter;
+  // Read object position
+  int objectX = huskyLens.readBlockParameter(1).xCenter;
+  int objectY = huskyLens.readBlockParameter(1).yCenter;
 
-// Pan Movement
-  if (xCenter > 190) {
-    mind_n_currentx -= 1.5;
-    servo_9.write(constrain(mind_n_currentx, 0, 120));
-    
-  } else if (xCenter > 10 && xCenter < 130) {
-    mind_n_currentx += 1.5;
-    servo_9.write(constrain(mind_n_currentx, 0, 120));
-  }
+  // Map object position to servo angles
+  int panAngle = map(objectX, 0, 320, 0, 180); 
+  int tiltAngle = map(objectY, 0, 240, 0, 180);
 
-// Tilt Movement
-  if (yCenter > 150) {
-    mind_n_currenty += 1.0;
-    servo_10.write(constrain(mind_n_currenty, 0, 180));
-  } else if (yCenter > 10 && yCenter < 90) {
-    mind_n_currenty -= 1.0;
-    servo_10.write(constrain(mind_n_currenty, 0, 180));
-  }
+  // Constrain servo angles to valid range
+  panAngle = constrain(panAngle, 0, 180);
+  tiltAngle = constrain(tiltAngle, 0, 180);
 
-  delay(100); // Adjust delay as needed
+  // Set servo angles
+  panServo.write(panAngle);
+  tiltServo.write(tiltAngle);
+  
+  
+  // Print object position (for debugging)
+  Serial.print("Object Position - X: ");
+  Serial.print(objectX);
+  Serial.print(", Y: ");
+  Serial.println(objectY);
 }
