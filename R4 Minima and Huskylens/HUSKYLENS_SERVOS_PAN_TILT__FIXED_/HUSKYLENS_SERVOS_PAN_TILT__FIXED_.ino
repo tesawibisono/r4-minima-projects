@@ -12,8 +12,8 @@
 #include <Servo.h>
 
 // Pin Definitions
-#define PAN_SERVO_PIN 9
-#define TILT_SERVO_PIN 10
+#define PAN_SERVO_PIN 9 //base
+#define TILT_SERVO_PIN 10 //top
 
 // Global Variables
 Servo panServo;
@@ -33,7 +33,7 @@ void setup() {
   huskyLens.writeAlgorithm(ALGORITHM_OBJECT_TRACKING); // Set algorithm to object tracking mode
   
   // Set initial position of servos
-  panServo.write(90); // Center position
+  panServo.write(30); // Center position
   tiltServo.write(90); // Center position
 
   delay(2000);
@@ -53,7 +53,7 @@ void loop() {
 
   // Constrain servo angles to valid range
   panAngle = constrain(panAngle, 0, 180);
-  tiltAngle = constrain(tiltAngle, 0, 180);
+  tiltAngle = constrain(tiltAngle, 0, 60);
 
   // Set servo angles
   panServo.write(panAngle);
