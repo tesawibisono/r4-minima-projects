@@ -59,11 +59,11 @@ void loop() {
   else {
   // Map object position to servo angles
   int panAngle = map(objectX, 0, 320, 180, 0); 
-  int tiltAngle = map(objectY, 0, 240, 0, 180);
+  int tiltAngle = map(objectY, 0, 240, 180, 0);
 
   // Constrain servo angles to valid range
   panAngle = constrain(panAngle, 0, 180);
-  tiltAngle = constrain(tiltAngle, 0, 60);
+  tiltAngle = constrain(tiltAngle, 0, 180);
 
   // Set servo angles
   panServo.write(panAngle);
