@@ -13,12 +13,16 @@
 
 // Pin Definitions
 #define PAN_SERVO_PIN 9 //base
-#define TILT_SERVO_PIN 10 //top
+//** #define TILT_SERVO_PIN 10 //top
 
 // Global Variables
 Servo panServo;
-Servo tiltServo;
+//** Servo tiltServo;
 DFRobot_HuskyLens huskyLens;
+
+// Servo movement increment and delay
+const int SERVO_INCREMENT = 0.00000001; // Adjust as needed for smoother movement
+const int SERVO_DELAY = 15; // Delay in milliseconds between servo movements
 
 void setup() {
   // Initialize serial communication for debugging
@@ -26,7 +30,7 @@ void setup() {
 
   // Attach servos to pins
   panServo.attach(PAN_SERVO_PIN);
-  tiltServo.attach(TILT_SERVO_PIN);
+  //** tiltServo.attach(TILT_SERVO_PIN);
 
   // Initialize HuskyLens
   huskyLens.beginI2CUntilSuccess();
@@ -34,10 +38,27 @@ void setup() {
   
   // Set initial position of servos
   panServo.write(90); // Center position
-  tiltServo.write(90); // Center position
+  //** tiltServo.write(90); // Center position
 
   delay(2000);
 }
+
+// Function to smoothly move the servo to the target angle
+void moveServoSmoothly(Servo& servo, int targetAngle) {
+  int currentAngle = servo.read();
+  while (currentAngle != targetAngle) {
+    if (currentAngle < targetAngle) {
+      currentAngle += SERVO_INCREMENT;
+      if (currentAngle > targetAngle) currentAngle = targetAngle;
+    } else {
+      currentAngle -= SERVO_INCREMENT;
+      if (currentAngle < targetAngle) currentAngle = targetAngle;
+    }
+    servo.write(currentAngle);
+    delay(SERVO_DELAY);
+  }
+} 
+
 
 void loop() {
   // Request data from HuskyLens
@@ -51,23 +72,23 @@ void loop() {
   if (objectX == -1 && objectY == -1) {
     // Object not detected, move servos to initial position
     panServo.write(90); // Center position
-    tiltServo.write(90); // Center position
+    //** tiltServo.write(90); // Center position
 
     // Print servo angles (for debugging)
-    //Serial.println("Servo angles - Pan: 90, Tilt: 90 (Object not detected)");
+    //** Serial.println("Servo angles - Pan: 90, Tilt: 90 (Object not detected)");
   } 
   else {
   // Map object position to servo angles
   int panAngle = map(objectX, 0, 320, 180, 0); 
-  int tiltAngle = map(objectY, 0, 240, 0, 180);
+  //** int tiltAngle = map(objectY, 0, 240, 0, 180);
 
   // Constrain servo angles to valid range
   panAngle = constrain(panAngle, 0, 180);
-  tiltAngle = constrain(tiltAngle, 0, 60);
+  //** tiltAngle = constrain(tiltAngle, 0, 60);
 
   // Set servo angles
   panServo.write(panAngle);
-  //tiltServo.write(tiltAngle);
+  //** tiltServo.write(tiltAngle);
   
   // Print object position (for debugging)
   Serial.print("Object Position - X: ");
@@ -77,6 +98,6 @@ void loop() {
   Serial.print("Servo angles - Pan: ");
   Serial.print(panAngle);
   Serial.print(", Tilt: ");
-  Serial.println(tiltAngle);
+//**  Serial.println(tiltAngle);
   }
 }
