@@ -22,7 +22,7 @@ DFRobot_HuskyLens huskyLens;
 
 void setup() {
   // Initialize serial communication for debugging
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   // Attach servos to pins
   panServo.attach(PAN_SERVO_PIN);
@@ -54,7 +54,7 @@ void loop() {
     tiltServo.write(90); // Center position
 
     // Print servo angles (for debugging)
-    Serial.println("Servo angles - Pan: 90, Tilt: 90 (Object not detected)");
+    //Serial.println("Servo angles - Pan: 90, Tilt: 90 (Object not detected)");
   } 
   else {
   // Map object position to servo angles
@@ -67,13 +67,13 @@ void loop() {
 
   // Set servo angles
   panServo.write(panAngle);
-  tiltServo.write(tiltAngle);
+  //tiltServo.write(tiltAngle);
   
   // Print object position (for debugging)
   Serial.print("Object Position - X: ");
-  Serial.print(panAngle);
+  Serial.print(objectX);
   Serial.print(", Y: ");
-  Serial.println(tiltAngle);
+  Serial.println(objectY);
   Serial.print("Servo angles - Pan: ");
   Serial.print(panAngle);
   Serial.print(", Tilt: ");
