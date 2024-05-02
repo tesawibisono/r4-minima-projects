@@ -1,67 +1,50 @@
-
-// Include libraries and global variables
 #include <SoftwareSerial.h>
 #include <DFRobot_HuskyLens.h>
 #include <Servo.h>
 
-// Pin Definitions
-#define PIN_SERVO_9 9 // Pin number for servo motor 9
-#define PIN_SERVO_10 10 // Pin number for servo motor 10
+// Constants for screen resolution and center point
+const int SCREEN_WIDTH = 320;
+const int SCREEN_HEIGHT = 240;
+const int SCREEN_CENTER_X = SCREEN_WIDTH / 2;
+const int SCREEN_CENTER_Y = SCREEN_HEIGHT / 2;
 
-// Initial angles for servo motors
-#define INITIAL_ANGLE_SERVO_9 90 // Initial angle for servo motor 9
-#define INITIAL_ANGLE_SERVO_10 90 // Initial angle for servo motor 10
+// Global variables
+volatile float panAngle = 90; // Initial pan angle
+Servo panServo; // Servo for pan movement
 
-// Global Variables
-Servo servo_9; // Declare servo object for motor 9
-Servo servo_10; // Declare servo object for motor 10
-DFRobot_HuskyLens huskylens; // Declare HuskyLens object
-
-volatile float mind_n_currentx, mind_n_currenty;
+DFRobot_HuskyLens huskylens; // HuskyLens object
 
 void setup() {
-    // Initialize serial communication for debugging
-    Serial.begin(115200);
-
-    // Initialize HuskyLens sensor
-    huskylens.beginI2CUntilSuccess();
-    huskylens.writeAlgorithm(ALGORITHM_OBJECT_TRACKING); // Set algorithm to object tracking mode
-
-    // Attach servo motors to pins
-    servo_9.attach(PIN_SERVO_9);
-    servo_10.attach(PIN_SERVO_10);
-
-    // Set initial position of servo motors if needed
-    servo_9.write(INITIAL_ANGLE_SERVO_9);
-    servo_10.write(INITIAL_ANGLE_SERVO_10);
+  Serial.begin(9600); // Initialize serial communication for debugging
+  
+  panServo.attach(9); // Attach pan servo to pin 9
+  
+  huskylens.beginI2CUntilSuccess(); // Initialize I2C communication with HuskyLens
+  huskylens.writeAlgorithm(ALGORITHM_OBJECT_TRACKING); // Set algorithm to object tracking mode
+  
+  delay(2000); // Wait for HuskyLens to initialize
 }
 
-
 void loop() {
-    huskylens.request();
-
-    int xCenter = huskylens.readBlockParameter(1).xCenter;
-    int yCenter = huskylens.readBlockParameter(1).yCenter;
-
-    if (xCenter > 190) {
-        mind_n_currentx -= 1.5;
-        mind_n_currentx = constrain(mind_n_currentx, 0, 180);
-        servo_9.write(mind_n_currentx);
-    }
-    else if (xCenter > 10 && xCenter < 130) {
-        mind_n_currentx += 1.5;
-        mind_n_currentx = constrain(mind_n_currentx, 0, 180);
-        servo_9.write(mind_n_currentx);
-    }
-
-   // if (yCenter > 150) {
-   //     mind_n_currenty += 1.0;
-   //     mind_n_currenty = constrain(mind_n_currenty, 0, 180);
-   //     servo_10.write(mind_n_currenty);
-   // }
-   // else if (yCenter > 10 && yCenter < 90) {
-   //     mind_n_currenty -= 1;
-   //     mind_n_currenty = constrain(mind_n_currenty, 0, 180);
-   //     servo_10.write(mind_n_currenty);
-   // }
+  // Request data from HuskyLens
+  huskylens.request();
+  
+  // Read the position (xCenter, yCenter) of the detected object
+  int xCenter = huskylens.readBlockParameter(1).xCenter;
+  int yCenter = huskylens.readBlockParameter(1).yCenter;
+  
+  // Calculate the pan adjustment based on the object's position
+  if (xCenter > SCREEN_CENTER_X + 20) { // If object is to the right of center
+    panAngle -= 1.5; // Decrease pan angle
+  } else if (xCenter < SCREEN_CENTER_X - 20) { // If object is to the left of center
+    panAngle += 1.5; // Increase pan angle
+  }
+  
+  // Constrain pan angle within valid range (0 to 180 degrees)
+  panAngle = constrain(panAngle, 0, 180);
+  
+  // Update the pan servo position
+  panServo.write(panAngle);
+  
+  delay(100); // Add a short delay to avoid rapid servo movements
 }
