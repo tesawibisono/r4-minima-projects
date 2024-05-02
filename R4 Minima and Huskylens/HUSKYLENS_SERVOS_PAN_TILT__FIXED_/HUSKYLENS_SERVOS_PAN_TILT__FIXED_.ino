@@ -21,8 +21,9 @@ Servo panServo;
 DFRobot_HuskyLens huskyLens;
 
 // Servo movement increment and delay
-const int SERVO_INCREMENT = 0.00000001; // Adjust as needed for smoother movement
-const int SERVO_DELAY = 15; // Delay in milliseconds between servo movements
+ const int SERVO_INCREMENT = 1; // Adjust as needed for smoother movement
+ const int SERVO_DELAY = 15; // Delay in milliseconds between servo movements
+
 
 void setup() {
   // Initialize serial communication for debugging
@@ -44,7 +45,7 @@ void setup() {
 }
 
 // Function to smoothly move the servo to the target angle
-void moveServoSmoothly(Servo& servo, int targetAngle) {
+ void moveServoSmoothly(Servo& servo, int targetAngle) {
   int currentAngle = servo.read();
   while (currentAngle != targetAngle) {
     if (currentAngle < targetAngle) {
@@ -52,12 +53,12 @@ void moveServoSmoothly(Servo& servo, int targetAngle) {
       if (currentAngle > targetAngle) currentAngle = targetAngle;
     } else {
       currentAngle -= SERVO_INCREMENT;
-      if (currentAngle < targetAngle) currentAngle = targetAngle;
+     if (currentAngle < targetAngle) currentAngle = targetAngle;
     }
     servo.write(currentAngle);
     delay(SERVO_DELAY);
   }
-} 
+ } 
 
 
 void loop() {
@@ -89,7 +90,13 @@ void loop() {
   // Set servo angles
   panServo.write(panAngle);
   //** tiltServo.write(tiltAngle);
-  
+
+  // Move pan servo smoothly to the target angle
+    moveServoSmoothly(panServo, panAngle);
+
+  // Move tilt servo smoothly to the target angle
+  //** moveServoSmoothly(tiltServo, tiltAngle);
+
   // Print object position (for debugging)
   Serial.print("Object Position - X: ");
   Serial.print(objectX);
