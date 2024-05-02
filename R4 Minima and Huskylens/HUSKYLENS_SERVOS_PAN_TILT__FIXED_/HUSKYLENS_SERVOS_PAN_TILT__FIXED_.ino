@@ -33,7 +33,7 @@ void setup() {
   huskyLens.writeAlgorithm(ALGORITHM_OBJECT_TRACKING); // Set algorithm to object tracking mode
   
   // Set initial position of servos
-  panServo.write(30); // Center position
+  panServo.write(90); // Center position
   tiltServo.write(90); // Center position
 
   delay(2000);
@@ -47,8 +47,18 @@ void loop() {
   int objectX = huskyLens.readBlockParameter(1).xCenter;
   int objectY = huskyLens.readBlockParameter(1).yCenter;
 
+// Check if object is detected
+  if (objectX == -1 && objectY == -1) {
+    // Object not detected, move servos to initial position
+    panServo.write(90); // Center position
+    tiltServo.write(90); // Center position
+
+    // Print servo angles (for debugging)
+    Serial.println("Servo angles - Pan: 90, Tilt: 90 (Object not detected)");
+  } 
+  else {
   // Map object position to servo angles
-  int panAngle = map(objectX, 0, 320, 0, 180); 
+  int panAngle = map(objectX, 0, 320, 180, 0); 
   int tiltAngle = map(objectY, 0, 240, 0, 180);
 
   // Constrain servo angles to valid range
@@ -59,10 +69,14 @@ void loop() {
   panServo.write(panAngle);
   tiltServo.write(tiltAngle);
   
-  
   // Print object position (for debugging)
   Serial.print("Object Position - X: ");
-  Serial.print(objectX);
+  Serial.print(panAngle);
   Serial.print(", Y: ");
-  Serial.println(objectY);
+  Serial.println(tiltAngle);
+  Serial.print("Servo angles - Pan: ");
+  Serial.print(panAngle);
+  Serial.print(", Tilt: ");
+  Serial.println(tiltAngle);
+  }
 }
