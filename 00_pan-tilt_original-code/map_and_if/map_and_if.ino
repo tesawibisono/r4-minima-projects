@@ -20,6 +20,9 @@ Servo panServo;
 Servo tiltServo;
 DFRobot_HuskyLens huskyLens;
 
+const int HUSK_LENS_CENTER_X = 160;
+const int HUSKY_LENS_CENTER_Y = 120;
+
 void setup() {
   // Initialize serial communication for debugging
   Serial.begin(9600);
@@ -80,3 +83,8 @@ void loop() {
 //  Serial.println(tiltAngle);
   }
 }
+
+void GetOffset(int object_x, int object_y){
+
+  
+  }
