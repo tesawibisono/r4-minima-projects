@@ -50,8 +50,8 @@ void loop() {
 // Check if object is detected
   if (objectX == -1 && objectY == -1) {
     // Object not detected, move servos to initial position
-    panServo.write(90); // Center position
-    tiltServo.write(90); // Center position
+//    panServo.write(90); // Center position
+//    tiltServo.write(90); // Center position
 
     // Print servo angles (for debugging)
     Serial.println("Initial Servo Angles (No Object Detected)");
@@ -66,17 +66,17 @@ void loop() {
   tiltAngle = constrain(tiltAngle, 0, 180);
 
   // Set servo angles
-  panServo.write(panAngle);
-  tiltServo.write(tiltAngle);
+//  panServo.write(panAngle);
+//  tiltServo.write(tiltAngle);
   
   // Print object position (for debugging)
   Serial.print("Object Position - X: ");
   Serial.print(objectX);
   Serial.print(", Y: ");
   Serial.println(objectY);
-  Serial.print("Servo angles - Pan: ");
-  Serial.print(panAngle);
-  Serial.print(", Tilt: ");
-  Serial.println(tiltAngle);
+//  Serial.print("Servo angles - Pan: ");
+//  Serial.print(panAngle);
+//  Serial.print(", Tilt: ");
+//  Serial.println(tiltAngle);
   }
 }
