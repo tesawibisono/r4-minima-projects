@@ -53,7 +53,7 @@ void loop() {
 
   // Constrain servo angles to valid range
   panAngle = constrain(panAngle, 0, 180);
-  tiltAngle = constrain(tiltAngle, 0, 60);
+  tiltAngle = constrain(tiltAngle, 0, 180);
 
   // Set servo angles
   panServo.write(panAngle);
