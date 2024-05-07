@@ -47,13 +47,22 @@ void loop() {
   int objectX = huskyLens.readBlockParameter(1).xCenter;
   int objectY = huskyLens.readBlockParameter(1).yCenter;
 
+  // Check if object is detected
+  if (objectX == -1 && objectY == -1) {
+    // Object not detected, move servos to initial position
+    panServo.write(90); // Center position
+    tiltServo.write(90); // Center position
+
+  // Print servo angles (for debugging)
+  Serial.println("Initial Servo Angles (No Object Detected)");
+
   // Map object position to servo angles
-  int panAngle = map(objectX, 0, 320, 0, 180); 
-  int tiltAngle = map(objectY, 0, 240, 0, 180);
+  int panAngle = map(objectX, 0, 320, 180, 0); 
+  int tiltAngle = map(objectY, 0, 240, 150, 30);
 
   // Constrain servo angles to valid range
-  panAngle = constrain(panAngle, 0, 180);
-  tiltAngle = constrain(tiltAngle, 0, 180);
+  panAngle = constrain(panAngle, 180, 0);
+  tiltAngle = constrain(tiltAngle, 150, 30);
 
   // Set servo angles
   panServo.write(panAngle);
