@@ -1,6 +1,6 @@
 /* The HuskyLens module communicates using the I2C protocol,
  * so you should connect it to the Arduino's dedicated I2C pins.
- * On most Arduino boards, these pins are labeled as SDA (data line)
+ * On Arduino R4 Minima boards, these pins are labeled as SDA (data line)
  * and SCL (clock line). 
  * 
  * The pins used for I2C on the UNO R4 Minima are the following:
@@ -22,7 +22,7 @@ DFRobot_HuskyLens huskyLens;
 
 void setup() {
   // Initialize serial communication for debugging
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   // Attach servos to pins
   panServo.attach(PAN_SERVO_PIN);
@@ -47,36 +47,36 @@ void loop() {
   int objectX = huskyLens.readBlockParameter(1).xCenter;
   int objectY = huskyLens.readBlockParameter(1).yCenter;
 
-  // Check if object is detected
+// Check if object is detected
   if (objectX == -1 && objectY == -1) {
     // Object not detected, move servos to initial position
     panServo.write(90); // Center position
     tiltServo.write(90); // Center position
 
-  // Print servo angles (for debugging)
-  Serial.println("Initial Servo Angles (No Object Detected)");
-
+    // Print servo angles (for debugging)
+    Serial.println("Initial Servo Angles (No Object Detected)");
+  } 
+  else {
   // Map object position to servo angles
   int panAngle = map(objectX, 0, 320, 180, 0); 
-  //int tiltAngle = map(objectY, 0, 240, 30, 150);
+  int tiltAngle = map(objectY, 0, 240, 150, 40);
 
   // Constrain servo angles to valid range
-  panAngle = constrain(panAngle, 180, 0);
-  //tiltAngle = constrain(tiltAngle, 30, 150);
+  panAngle = constrain(panAngle, 0, 180);
+  tiltAngle = constrain(tiltAngle, 40, 150);
 
   // Set servo angles
   panServo.write(panAngle);
-  //tiltServo.write(tiltAngle);
-  
+  tiltServo.write(tiltAngle);
   
   // Print object position (for debugging)
-//  Serial.print("Object Position - X: ");
-//  Serial.print(objectX);
-//  Serial.print(", Y: ");
-//  Serial.println(objectY);
-//  Serial.print("Servo angles - Pan: ");
-//  Serial.print(panAngle);
-//  Serial.print(", Tilt: ");
-  //Serial.println(tiltAngle);
+  Serial.print("Object Position - X: ");
+  Serial.print(objectX);
+  Serial.print(", Y: ");
+  Serial.println(objectY);
+  Serial.print("Servo angles - Pan: ");
+  Serial.print(panAngle);
+  Serial.print(", Tilt: ");
+  Serial.println(tiltAngle);
   }
 }
