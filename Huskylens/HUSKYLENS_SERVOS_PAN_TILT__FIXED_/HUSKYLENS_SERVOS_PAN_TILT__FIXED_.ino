@@ -5,6 +5,9 @@
  * 
  * The pins used for I2C on the UNO R4 Minima are the following:
  * SDA - D18 or A4. SCL - D19 or A5.
+ * 
+ * Huskylens Green Line - SDA
+ * Huskylens Blue Line - SCL
  */
 
 #include <SoftwareSerial.h>
